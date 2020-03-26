@@ -87,7 +87,7 @@ public class Cache {
             }
             if(node.key.equals(key)) {
                 node.val = value;
-                moveToTail(node);
+//                moveToTail(node);
             }
             node = node.next;
         }

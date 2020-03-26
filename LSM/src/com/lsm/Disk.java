@@ -8,8 +8,8 @@ public class Disk {
     static int SSTableCapacity;
     static int levels;
 
-    public Disk(int SSTableCapacity) {
-        this.SSTableCapacity = SSTableCapacity;
+    public Disk(int ssTableCapacity) {
+        this.SSTableCapacity = ssTableCapacity;
         levels = 0;
     }
 

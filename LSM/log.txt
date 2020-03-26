@@ -1,7 +1,5 @@
 R X 13
-levels : 0
 R Y 7
-levels : 0
 W Y (5, John, 412-111-2222)
 Written: Y, 5, John, 412-111-2222
 M Y 609
@@ -24,31 +22,24 @@ Written: Y, 3, Alex, 412-100-2122
 W X (1, Lily, 412-656-2215)
 Written: X, 1, Lily, 412-656-2215
 R X 4
-levels : 0
 Read: X, 4, Thalia, 412-656-2214
 R Y 3
-levels : 0
 Read: Y, 3, Alex, 412-100-2122
-W X (2, Thalia, 412-656-2212)
+W X (2, Thalia, 417-656-2212)
 Create L-0 K-X1-X2
-Written: X, 2, Thalia, 412-656-2212
+Written: X, 2, Thalia, 417-656-2212
 W X (7, Ellie, 412-656-2213)
 Written: X, 7, Ellie, 412-656-2213
-W X (8, Tina, 412-656-2212)
+W X (8, Tina, 417-656-2212)
 Create L-0 K-X7-X8
-Written: X, 8, Tina, 412-656-2212
+Written: X, 8, Tina, 417-656-2212
 W X (4, Joe, 412-656-2213)
 Written: X, 4, Joe, 412-656-2213
-W X (2, Esther, 412-656-2212)
-{}
-Create L-0 K-X2-X4
-Written: X, 2, Esther, 412-656-2212
-W X (10, Annie, 412-656-2213)
-Written: X, 10, Annie, 412-656-2213
 R X 1
-levels : 2
+SWAP K-X1
+Read: X, 1, Lily, 412-656-2215
 E X 5
-Create L-0 K-X10-X5
+Create L-0 K-X4-X5
 Erased: X 5
 W Y (9, Lucky, 412-100-2222)
 Written: Y, 9, Lucky, 412-100-2222
@@ -56,24 +47,15 @@ W Y (4, Jane, 417-111-2222)
 Create L-0 K-Y4-Y9
 Written: Y, 4, Jane, 417-111-2222
 R Y 9
-levels : 2
 SWAP K-Y9
 Read: Y, 9, Lucky, 412-100-2222
 R Y 4
-levels : 2
 SWAP K-Y4
 Read: Y, 4, Jane, 417-111-2222
 R X 10
-levels : 2
-SWAP K-X10
-Read: X, 10, Annie, 412-656-2213
 M X 412
-SWAP K-X2
-MRead: X, 2, Esther, 412-656-2212
 SWAP K-X4
 MRead: X, 4, Joe, 412-656-2213
-SWAP K-X10
-MRead: X, 10, Annie, 412-656-2213
 E Y 5
 Erased: Y 5
 R Y 5
