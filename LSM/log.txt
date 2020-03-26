@@ -40,7 +40,6 @@ Written: X, 8, Tina, 412-656-2212
 W X (4, Joe, 412-656-2213)
 Written: X, 4, Joe, 412-656-2213
 W X (2, Esther, 412-656-2212)
- level 0 is full----------------------------
 {}
 Create L-0 K-X2-X4
 Written: X, 2, Esther, 412-656-2212
