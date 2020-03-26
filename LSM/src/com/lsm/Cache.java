@@ -78,7 +78,6 @@ public class Cache {
     }
 
     public void set(String tableName, String key, List value) {
-        //TODO
         ListNode node = dummy.next;
         while(node != null) {
             if(!((node.tableName).equals(tableName))) {

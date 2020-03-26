@@ -1,3 +1,5 @@
+package com.lsm;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class Main {
         System.setOut(out);
 
         //BufferedReader是可以按行读取文件
-        FileInputStream inputStream = new FileInputStream("script");
+        FileInputStream inputStream = new FileInputStream("./src/com/lsm/script");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String action;
@@ -69,6 +71,7 @@ public class Main {
         inputStream.close();
         bufferedReader.close();
         long endTime=System.currentTimeMillis();
+        System.out.println("-------------------------");
         System.out.println("Time: " + (endTime-startTime) + "ms");
         System.out.println("The total throughput: " + numrecord*1000.0/(endTime-startTime));
         System.out.println("The read throughput: " + rnum*1000.0/rtime);
