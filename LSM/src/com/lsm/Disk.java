@@ -8,8 +8,8 @@ public class Disk {
     static int SSTableCapacity;
     static int levels;
 
-    public Disk(int ssTableCapacity) {
-        this.SSTableCapacity = ssTableCapacity;
+    public Disk(int SSTableCapacity) {
+        this.SSTableCapacity = SSTableCapacity;
         levels = 0;
     }
 
@@ -148,10 +148,7 @@ public class Disk {
                     } catch (Exception e) {
                     }
                 }
-                for (Object key : merge.keySet()) {
-                    System.out.println("table: " + key);
-                    System.out.println("memtable: " + merge.get(key));
-                }
+                System.out.println("SWAP IN L-" + level + "K-" + table.get(i) + merge.firstKey() + "-" + table.get(i) + merge.lastKey());
             } else {
                 levels++;
             }
@@ -185,6 +182,7 @@ public class Disk {
                     count++;
                     try {
                         FileOutputStream fos = new FileOutputStream("" + (level + 1) + table.get(i) + count + ".txt");
+                        System.out.println("Create L-" + (level + 1) + " K-" + table.get(i) + split.firstKey() + "-" + table.get(i) + split.lastKey());
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(split);
                         oos.close();
