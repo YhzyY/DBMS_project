@@ -21,8 +21,13 @@ public class Main {
         String data = "delete";
         String input;
         int numrecord = 0;
+        int wnum = 0;
+        int rnum = 0;
+        long wtime = 0;
+        long rtime = 0;
         Memory memory = new Memory(cacheCapacity, SSTableCapacity);
         while ((input = bufferedReader.readLine()) != null) {
+            long instime=System.currentTimeMillis(); 
             System.out.println(input);
             String[] current = input.split(" ",3);
             action = null;
@@ -35,6 +40,9 @@ public class Main {
             if(action.equals("W")){
 //                System.out.println("-------write--------");
                 memory.write(table, data);
+                long inetime=System.currentTimeMillis();
+                wtime += inetime - instime;
+                wnum++; 
             }else if(action.equals("E")){
 //                System.out.println("-------erase--------");
                 memory.erase(table, data);
@@ -44,6 +52,9 @@ public class Main {
             }else if(action.equals("R")){
 //                System.out.println("-------read ID--------");
                 memory.readID(table, data);
+                long inetime=System.currentTimeMillis();
+                rtime += inetime - instime;
+                rnum++; 
             }else if(action.equals("M")){
 //                System.out.println("-------read area code--------");
                 memory.readAreaCode(table, data);
@@ -58,7 +69,9 @@ public class Main {
         inputStream.close();
         bufferedReader.close();
         long endTime=System.currentTimeMillis();
-        System.out.println("Time: " + (endTime-startTime));
-        System.out.println("Throughput: " + numrecord*1000.0/(endTime-startTime));
+        System.out.println("Time: " + (endTime-startTime) + "ms");
+        System.out.println("The total throughput: " + numrecord*1000.0/(endTime-startTime));
+        System.out.println("The read throughput: " + rnum*1000.0/rtime);
+        System.out.println("The write throughput: " + wnum*1000.0/wtime);
     }
 }
