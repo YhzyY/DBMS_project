@@ -1,5 +1,3 @@
-package com.lsm;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +6,21 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
+        long startTime=System.currentTimeMillis();  
         final int cacheCapacity = 2;
         final int SSTableCapacity = 2;
         final PrintStream out = new PrintStream("log.txt");
         System.setOut(out);
 
         //BufferedReader是可以按行读取文件
-        FileInputStream inputStream = new FileInputStream("./src/com/lsm/script");
+        FileInputStream inputStream = new FileInputStream("script");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String action;
         String table;
         String data = "delete";
         String input;
+        int numrecord = 0;
         Memory memory = new Memory(cacheCapacity, SSTableCapacity);
         while ((input = bufferedReader.readLine()) != null) {
             System.out.println(input);
@@ -48,6 +48,7 @@ public class Main {
 //                System.out.println("-------read area code--------");
                 memory.readAreaCode(table, data);
             }
+            numrecord++;
         }
 
 //        System.out.println("---------------");
@@ -56,5 +57,8 @@ public class Main {
         //close
         inputStream.close();
         bufferedReader.close();
+        long endTime=System.currentTimeMillis();
+        System.out.println("Time: " + (endTime-startTime));
+        System.out.println("Throughput: " + numrecord*1000.0/(endTime-startTime));
     }
 }
