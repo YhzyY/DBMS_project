@@ -148,7 +148,7 @@ public class Disk {
                     } catch (Exception e) {
                     }
                 }
-                System.out.println("SWAP IN L-" + level + "K-" + table.get(i) + merge.firstKey() + "-" + table.get(i) + merge.lastKey());
+                System.out.println("SWAP IN L-" + level + " K-" + table.get(i) + merge.firstKey() + "-" + table.get(i) + merge.lastKey());
             } else {
                 levels++;
             }
