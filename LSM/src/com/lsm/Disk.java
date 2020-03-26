@@ -69,6 +69,25 @@ public class Disk{
         return false;
     }
 
+     public static int numTable(int level){
+    	try{
+            File file = new File("C:\\Users\\oylr2\\Desktop\\DBMS_project-master\\LSM\\src\\com\\lsm");
+            File[] f = file.listFiles();
+            int count = 0;
+            for (File file2 : f) {
+                String path = file2.getAbsolutePath();
+                String name = path.substring(path.lastIndexOf("\\")+1);
+                String s = level + "";
+                if(name.substring(0,1).equals(s)){
+                    count++;
+                }
+            }
+            return count;
+        }catch (Exception e) {
+        }
+        return 0;
+    }
+
     public static void Compact(int level){
         File file = new File("C:\\Users\\oylr2\\Desktop\\DBMS_project-master\\LSM\\src\\com\\lsm");
         File[] f = file.listFiles();
@@ -157,5 +176,9 @@ public class Disk{
         if(isFull(level+1)){
             Compact(level+1);
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+    	numTable(1)
     }
 }
