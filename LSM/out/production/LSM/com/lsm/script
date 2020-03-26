@@ -9,17 +9,18 @@ M X 412
 E X 2
 W X (4, Thalia, 412-656-2214)
 W Y (3, Alex, 412-100-2122)
-W X (1, Thalia, 412-656-2215)
+W X (1, Lily, 412-656-2215)
 R X 4
 R Y 3
 R X 1
 E X 5
-W X (1, Thalia, 412-656-2215)
 W Y (9, Lucky, 412-100-2222)
 W Y (4, Jane, 417-111-2222)
-R X 4
 R Y 9
 R Y 4
 M X 412
 E Y 5
+R Y 5
 D Y
+R Y 9
+R X 4

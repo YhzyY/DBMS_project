@@ -10,7 +10,7 @@ Written: X, 2, Thalia, 412-656-2213
 R X 2
 Read: X, 2, Thalia, 412-656-2213
 M X 412
-MRead: X, 412, Thalia, 412-656-2213
+MRead: X, 2, Thalia, 412-656-2213
 E X 2
 Erased: X 2
 W X (4, Thalia, 412-656-2214)
@@ -19,40 +19,40 @@ Written: X, 4, Thalia, 412-656-2214
 W Y (3, Alex, 412-100-2122)
 Create L-0 K-Y3-Y5
 Written: Y, 3, Alex, 412-100-2122
-W X (1, Thalia, 412-656-2215)
-Written: X, 1, Thalia, 412-656-2215
+W X (1, Lily, 412-656-2215)
+Written: X, 1, Lily, 412-656-2215
 R X 4
 Read: X, 4, Thalia, 412-656-2214
 R Y 3
 Read: Y, 3, Alex, 412-100-2122
 R X 1
-Read: X, 1, Thalia, 412-656-2215
+Read: X, 1, Lily, 412-656-2215
 E X 5
 Create L-0 K-X1-X5
 Erased: X 5
-W X (1, Thalia, 412-656-2215)
-Written: X, 1, Thalia, 412-656-2215
 W Y (9, Lucky, 412-100-2222)
 Written: Y, 9, Lucky, 412-100-2222
 W Y (4, Jane, 417-111-2222)
 Create L-0 K-Y4-Y9
 Written: Y, 4, Jane, 417-111-2222
-R X 4
-Read: X, 4, Thalia, 412-656-2214
 R Y 9
-SWAP IN K-Y9
+SWAP K-Y9
 Read: Y, 9, Lucky, 412-100-2222
 R Y 4
-SWAP IN K-Y4
+SWAP K-Y4
 Read: Y, 4, Jane, 417-111-2222
 M X 412
-MRead: X, 412, Thalia, 412-656-2215
-SWAP IN K-X4
-MRead: X, 412, 4, [Thalia, 412-656-2214]
+SWAP K-X1
+MRead: X, 1, Lily, 412-656-2215
+SWAP K-X4
+MRead: X, 4, Thalia, 412-656-2214
 E Y 5
 Erased: Y 5
+R Y 5
+Read: Y, 5, delete
 D Y
 Deleted: Y
----------------
-table: X
-memtable: {1=[Thalia, 412-656-2215]}
+R Y 9
+table deleted
+R X 4
+Read: X, 4, Thalia, 412-656-2214

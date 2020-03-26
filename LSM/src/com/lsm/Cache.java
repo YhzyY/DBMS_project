@@ -60,7 +60,7 @@ public class Cache {
 //        System.out.println("Adding node (" + tableName + ": " + value.toString());
         ListNode newNode = new ListNode(tableName, key, value);
         if(size == capacity) {
-            System.out.println("SWAP IN K-" + tableName + key);
+            System.out.println("SWAP K-" + tableName + key);
             mapToPrev.remove(dummy.next);
             dummy.next = dummy.next.next;       //若capacity=1，dummy->node->null. 所以也不会出错
             if(dummy.next != null) {

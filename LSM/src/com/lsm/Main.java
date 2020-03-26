@@ -50,8 +50,8 @@ public class Main {
             }
         }
 
-        System.out.println("---------------");
-        memory.printTables();
+//        System.out.println("---------------");
+//        memory.printTables();
 
         //close
         inputStream.close();
