@@ -32,11 +32,11 @@ public class Memory{
     }
 
     public static void write(String tableName, String data){
-        System.out.println(tableName);
+//        System.out.println(tableName);
         String[] dataDetail = data.substring(1,data.length()-1).split(",");
         String key = dataDetail[0].trim();
         List value = Arrays.asList(dataDetail[1].trim(), dataDetail[2].trim());
-        System.out.println(key + " : " + value);
+//        System.out.println(key + " : " + value);
         TreeMap memtable;
         if(tableMap.containsKey(tableName)){
             memtable = (TreeMap) tableMap.get(tableName);
@@ -51,10 +51,10 @@ public class Memory{
     }
 
     public static void erase(String tableName, String data){
-        System.out.println(tableName);
+//        System.out.println(tableName);
         String key = data.trim();
         List value = Arrays.asList("delete");
-        System.out.println(key + " : " + value);
+//        System.out.println(key + " : " + value);
         if(tableMap.containsKey(tableName)){
             TreeMap memtable = (TreeMap) tableMap.get(tableName);
             memtable.put(key, value);
@@ -64,7 +64,7 @@ public class Memory{
     }
 
     public static void delete(String tableName) {
-        System.out.println(tableName);
+//        System.out.println(tableName);
         if(tableMap.containsKey(tableName)){
             TreeMap memtable = (TreeMap) tableMap.get(tableName);
             memtable.clear();
@@ -77,27 +77,27 @@ public class Memory{
     //reads need to bring SSTable blocks from disk to database buffer, and the blocks will be kept in a read cache.
     //只有读的时候要存buffer
     public static void readID(String tableName, String key) {
-        System.out.println(tableName + ":" + key);
+//        System.out.println(tableName + ":" + key);
         List cached = cache.get(tableName, key);
         TreeMap memtable = (TreeMap) tableMap.get(tableName);
         if(cached != null) {
 //        read from buffered cache
-            System.out.println("read from cache");
-            System.out.println(cached.toString());
+//            System.out.println("read from cache");
+//            System.out.println(cached.toString());
             String output = cached.toString();
             System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length()-1));
         } else if((memtable != null) && (memtable.containsKey(key))){
 //        read from memtable
-            System.out.println("read from memtable");
-            System.out.println(memtable.toString());
+//            System.out.println("read from memtable");
+//            System.out.println(memtable.toString());
             String output = memtable.get(key).toString();
             System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length()-1));
         }else{
-            System.out.println("read from disk");
+//            System.out.println("read from disk");
 
             List list = getIDSSTable(tableName, key);
             if(list == null) {
-                System.out.println("data not found in disk");
+//                System.out.println("data not found in disk");
             } else {
                 cache.add(tableName, (String)list.get(0), (List)list.get(1));
                 String output = list.get(1).toString();
@@ -182,13 +182,13 @@ public class Memory{
     }
 
     public static void readAreaCode(String tableName, String area) {
-        System.out.println(tableName + ":" + area);
+//        System.out.println(tableName + ":" + area);
         TreeMap memtable = (TreeMap) tableMap.get(tableName);
         Set outputKey = new HashSet();
         if(memtable != null){
 //        read from memtable
-            System.out.println("read from memtable");
-            System.out.println(memtable.toString());
+//            System.out.println("read from memtable");
+//            System.out.println(memtable.toString());
             for(Object key : memtable.keySet()) {
                 if(!outputKey.contains(key)){
                     List value = (List)memtable.get((String)key);
@@ -198,45 +198,26 @@ public class Memory{
                     if(((String)value.get(1)).substring(0, 3).equals(area)) {
                         String output = value.toString();
                         outputKey.add(key);
-                        System.out.println("Read: " + tableName + ", " + area + ", " + output.substring(1, output.length()-1));
+                        System.out.println("MRead: " + tableName + ", " + area + ", " + output.substring(1, output.length()-1));
                     }
                 }
 
             }
 
         }
-        System.out.println("read from disk");
+//        System.out.println("read from disk");
 
         Map<String, List> dataFromDisk = getAreaCodeSSTable(tableName, area, outputKey); //从disk里取出需要的key-value pairs
 
         if(dataFromDisk.size() == 0) {
-            System.out.println("data not found in disk");
+//            System.out.println("data not found in disk");
             return;
         }else{
             for(String key: dataFromDisk.keySet()){
                 cache.add(tableName, key, dataFromDisk.get(key));
-                System.out.println("Read: " + tableName + ", " + area + ", " + key + ", " + dataFromDisk.get(key).toString());
+                System.out.println("MRead: " + tableName + ", " + area + ", " + key + ", " + dataFromDisk.get(key).toString());
             }
         }
-//        for(TreeMap sstable : lists) {
-////            cache.add(tableName, sstable);         //从disk里取出来的sstable，要存入cache
-//            for(Object key : sstable.keySet()) {
-//                if(!outputKey.contains(key)){
-//                    cache.add(tableName, (String) key, (List) sstable.get(key));
-//                    List value = (List)sstable.get((String)key);
-//                    if(value.size() <= 1) {
-//                        continue;
-//                    }
-//                    if(((String)value.get(1)).substring(0, 3).equals(area)) {   //找到当前sstable里areacode符合要求的 输出
-//                        outputKey.add(key);
-//                        String output = value.toString();
-//                        System.out.println("Read: " + tableName + ", " + area + ", " + output.substring(1, output.length()-1));
-//                    }
-//                }
-//
-//            }
-
-//        }
     }
 
     public static Map<String, List> getAreaCodeSSTable(String tableName, String area, Set outputKey) {
@@ -278,20 +259,17 @@ public class Memory{
             oos.writeObject(data);
             oos.close();
             fos.close();
-//            BufferedWriter out = new BufferedWriter(new FileWriter(fileName + ".txt"));
-//            out.write(data);
-//            out.close();
-            System.out.println(fileName + ": 文件写入成功！");
+//            System.out.println(fileName + ": 文件写入成功！");
         } catch (IOException e) {
         }
     }
 
     public static void checkFlush(String tableName, TreeMap memtable) {
 
-        System.out.println("check ! " + tableName + ": length = " + memtable.size());
+//        System.out.println("check ! " + tableName + ": length = " + memtable.size());
         if (memtable.size() >= ssTableCapacity) {
             try {
-                System.out.println("flush!");
+//                System.out.println("flush!");
                 int numOfTable;
     //          give this new sstable a name and update tableNum and tableMap
                 if (tableNum.containsKey(tableName)) {
@@ -301,7 +279,6 @@ public class Memory{
                     numOfTable = 1;
                 }
 
-
                 String level = "0";
 //                String sstableName = tableName + "" + numOfTable;
                 String sstableName = level + tableName + "" + numOfTable;
@@ -309,7 +286,9 @@ public class Memory{
                 int stringlength = immutable_memtable.toString().length();
 //                writeToFile(sstableName, immutable_memtable.toString().substring(1, stringlength - 1));
                 writeToFile(sstableName, immutable_memtable);
-                System.out.println("Create L-0 K-");
+                String firstkey = (String) immutable_memtable.firstKey();
+                String lastkey = (String) immutable_memtable.lastKey();
+                System.out.println("Create L-0 K-" + tableName + firstkey + "-" + tableName + lastkey);
                 tableMap.remove(tableName);
                 tableNum.put(tableName, numOfTable);
 

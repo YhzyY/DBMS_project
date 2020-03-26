@@ -57,10 +57,10 @@ public class Cache {
     //如果当前cache没有满，直接加入
     //如果当前cache已满（size==capacity)，先删除头节点，然后将新的sstable加入列表尾部
     public void add(String tableName, String key, List value) {
-        System.out.println("Adding node (" + tableName + ": " + value.toString());
+//        System.out.println("Adding node (" + tableName + ": " + value.toString());
         ListNode newNode = new ListNode(tableName, key, value);
-
         if(size == capacity) {
+            System.out.println("SWAP IN K-" + tableName + key);
             mapToPrev.remove(dummy.next);
             dummy.next = dummy.next.next;       //若capacity=1，dummy->node->null. 所以也不会出错
             if(dummy.next != null) {
