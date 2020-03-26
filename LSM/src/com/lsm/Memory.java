@@ -15,6 +15,8 @@ public class Memory{
     static int ssTableCapacity;
     static int memTableCapacity;
 
+    static Disk disk = new Disk(ssTableCapacity);
+
     public Memory(int cacheCapacity, int ssTableCapacity) {
         this.cacheCapacity = cacheCapacity;
         this.ssTableCapacity = ssTableCapacity;
@@ -127,15 +129,17 @@ public class Memory{
         List list = new ArrayList();
 //        TreeMap sstable = new TreeMap();
         if(true) {
-            int levels = 0;  //  TODO: # of levels
+            int levels = disk.getLevels();  //  TODO: # of levels
+            System.out.println("levels : " + levels);
             int level = 0;
             //find the position of the sstable needed
             String fileName = null;
-            if(tableNum.size() == 0) {
-                level = 1;
-            }
+//            if(tableNum.size() == 0) {
+//                level = 1;
+//            }
             for(; level <= levels; level++) {
-                for(int num = (int)tableNum.get(tableName); num >= 1; num--) { //TODO: # of sstable in each level
+//                System.out.println("tableName----" + disk.numTableforTable(level,tableName));
+                for(int num = (int)disk.numTableforTable(level,tableName); num >= 1; num--) { //TODO: # of sstable in each level
 //                for(int num = 1; num <= (int)tableNum.get(tableName); num++) {
                     fileName = String.valueOf(level) + tableName + String.valueOf(num);
                     list = searchSSTable(fileName, key, "ID", null);
@@ -245,14 +249,14 @@ public class Memory{
 //        List<TreeMap> lists = new ArrayList<>();
 //        TreeMap sstable = new TreeMap();
         Map<String, List> dataFromDisk = new HashMap<>();
-        int levels = 0;         //  TODO: # of levels
+        int levels = disk.getLevels();         //  TODO: # of levels
         int level = 0;
         String fileName = null;
         if(tableNum.size() == 0) { //no sstable in level0
             level = 1;
         }
         for(; level <= levels; level++) {
-            for(int num = (int)tableNum.get(tableName); num >= 1; num--) { //  TODO: # of sstable in each level
+            for(int num = (int)disk.numTableforTable(level,tableName); num >= 1; num--) { //  TODO: # of sstable in each level
                 fileName = String.valueOf(level) + tableName + String.valueOf(num);
                 List records = searchSSTable(fileName, null, "AreaCode", area);
                 if(records == null || records.size() == 0) {
@@ -289,8 +293,13 @@ public class Memory{
 
 //        System.out.println("check ! " + tableName + ": length = " + memtable.size());
         if (memtable.size() >= ssTableCapacity) {
-            try {
 //                System.out.println("flush!");
+            if(disk.numTable(0) >= 4){
+                disk.Compact(0);
+                tableNum.clear();
+                System.out.println(tableNum.toString());
+            }
+            try {
                 int numOfTable;
     //          give this new sstable a name and update tableNum and tableMap
                 if (tableNum.containsKey(tableName)) {
