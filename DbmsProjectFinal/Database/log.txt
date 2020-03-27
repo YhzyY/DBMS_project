@@ -1,0 +1,65 @@
+W Y(5,John,412-111-222)
+SWAP IN T-Y P-1
+Written: Y,5,John,412-111-222
+W X(2,Thalia,412-656-221)
+SWAP IN T-X P-1
+Written: X,2,Thalia,412-656-221
+W Y(4,Kelvin,412-222-333)
+Written: Y,4,Kelvin,412-222-333
+W Y(6,Antony,412-111-444)
+SWAP IN T-Y P-2
+Written: Y,6,Antony,412-111-444
+W X(7,Francis,412-999-222)
+SWAP IN T-X P-2
+Written: X,7,Francis,412-999-222
+W X(8,Sudeep,412-000-111)
+SWAP IN T-X P-3
+Written: X,8,Sudeep,412-000-111
+W Y(3,Parth,412-123-432)
+Written: Y,3,Parth,412-123-432
+W Z(1,Surya,412-098-567)
+SWAP IN T-Z P-1
+Written: Z,1,Surya,412-098-567
+W X(7,Eden,412-555-111)
+Written: X,7,Eden,412-555-111
+W X(9,David,434-666-777)
+SWAP IN T-X P-4
+Written: X,9,David,434-666-777
+W T(5,Pulisic,456-758-999)
+SWAP IN T-T P-1
+Written: T,5,Pulisic,456-758-999
+W G(10,Akhil,434-656-788)
+SWAP IN T-G P-1
+Written: G,10,Akhil,434-656-788
+W T(10,Gautham,434-444-111)
+SWAP IN T-T P-2
+Written: T,10,Gautham,434-444-111
+W G(1,Ziyech,434-666-888)
+SWAP OUT T-Y P-1
+SWAP IN T-G P-2
+Written: G,1,Ziyech,434-666-888
+W T(2,Barkley,434-223-111)
+SWAP OUT T-X P-1
+SWAP IN T-T P-3
+Written: T,2,Barkley,434-223-111
+W G(3,Willian,909-111-222)
+SWAP OUT T-Y P-2
+SWAP IN T-G P-3
+Written: G,3,Willian,909-111-222
+R X 9
+9 David 434-666-777
+MY 412
+SWAP OUT T-X P-2
+SWAP OUT T-X P-3
+MREAD:5 John 412-111-222
+MREAD:6 Antony 412-111-444
+E X 9
+Erased X 9
+R Y 3
+3 Parth 412-123-432
+E Y 3
+Erased Y 3
+R T 2
+2 Barkley 434-223-111
+R G 3
+3 Willian 909-111-222
