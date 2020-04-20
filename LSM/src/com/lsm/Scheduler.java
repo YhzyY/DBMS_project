@@ -17,6 +17,10 @@ public class Scheduler {
 
 
     public static void scheduleTransaction(List transactions){
+        System.out.println("transactions :");
+        for (Object t: transactions){
+            System.out.println(t.toString());
+        }
 //        In case of transactions, the isolation level should be Serializable
 
 //        input format: [[transactionName(String), transaction(String)]]
@@ -39,6 +43,10 @@ public class Scheduler {
     }
 
     public static void scheduleProcess(List processes){
+        System.out.println("processes :");
+        for (Object t: processes){
+            System.out.println(t.toString());
+        }
 //        In case of processes, the isolation level should be Read Committed
 //        The input format is the same as transactions
     }
