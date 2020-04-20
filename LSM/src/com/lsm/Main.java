@@ -8,13 +8,31 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
+        final int cacheCapacity = 2;  //buffer size for the Data Manager
+        final int SSTableCapacity = 2;
+        String readMode = "roundRobin";  //either "random" or "roundRobin"
+        String scriptDirectory = "./src/com/lsm/scripts"; // the directory contains all the scripts
+        int randomSeed = '1'; // seed of the random number generator
+
+        Memory memory = new Memory(cacheCapacity, SSTableCapacity);
+        TransactionManager transactionManager = new TransactionManager(scriptDirectory, memory);
+        if(readMode.equals("random")){
+            transactionManager.random(randomSeed);
+        }else if(readMode.equals("roundRobin")){
+            transactionManager.roundRobin();
+        }else{
+            System.out.println("Wrong reading mode in Main.java");
+        }
+
+//  TODO:    You can comment all the above code and uncomment all the below code to see how LSM works without Transaction Manager and Scheduler
+
+        /**
         long startTime=System.currentTimeMillis();  
         final int cacheCapacity = 2;
         final int SSTableCapacity = 2;
         final PrintStream out = new PrintStream("log.txt");
         System.setOut(out);
 
-        //BufferedReader是可以按行读取文件
         FileInputStream inputStream = new FileInputStream("./src/com/lsm/script");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -76,5 +94,6 @@ public class Main {
         System.out.println("The total throughput: " + numrecord*1000.0/(endTime-startTime));
         System.out.println("The read throughput: " + rnum*1000.0/rtime);
         System.out.println("The write throughput: " + wnum*1000.0/wtime);
+         **/
     }
 }

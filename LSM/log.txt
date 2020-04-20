@@ -39,6 +39,12 @@ R X 1
 SWAP K-X1
 Read: X, 1, Lily, 412-656-2215
 E X 5
+SWAP IN L-0 K-X1-X7
+Create L-1 K-X1-X2
+Create L-1 K-X4-X7
+SWAP IN L-0 K-Y3-Y5
+Create L-1 K-Y3-Y5
+Create L-0 K-X4-X5
 Erased: X 5
 W Y (9, Lucky, 412-100-2222)
 Written: Y, 9, Lucky, 412-100-2222
@@ -66,7 +72,7 @@ table deleted
 R X 4
 Read: X, 4, Joe, 412-656-2213
 -------------------------
-Time: 80ms
-The total throughput: 387.5
-The read throughput: 203.38983050847457
-The write throughput: 923.0769230769231
+Time: 76ms
+The total throughput: 407.89473684210526
+The read throughput: 218.1818181818182
+The write throughput: 1000.0
