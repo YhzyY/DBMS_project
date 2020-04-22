@@ -1,78 +1,70 @@
-R X 13
-R Y 7
-W Y (5, John, 412-111-2222)
-Written: Y, 5, John, 412-111-2222
-M Y 609
-W X (2, Thalia, 412-656-2212)
-Written: X, 2, Thalia, 412-656-2212
-W X (2, Thalia, 412-656-2213)
-Written: X, 2, Thalia, 412-656-2213
-R X 2
-Read: X, 2, Thalia, 412-656-2213
-M X 412
-MRead: X, 2, Thalia, 412-656-2213
-E X 2
-Erased: X 2
-W X (4, Thalia, 412-656-2214)
-Create L-0 K-X2-X4
-Written: X, 4, Thalia, 412-656-2214
-W Y (3, Alex, 412-100-2122)
-Create L-0 K-Y3-Y5
-Written: Y, 3, Alex, 412-100-2122
-W X (1, Lily, 412-656-2215)
-Written: X, 1, Lily, 412-656-2215
-R X 4
-Read: X, 4, Thalia, 412-656-2214
-R Y 3
-Read: Y, 3, Alex, 412-100-2122
-W X (2, Thalia, 417-656-2212)
-Create L-0 K-X1-X2
-Written: X, 2, Thalia, 417-656-2212
-W X (7, Ellie, 412-656-2213)
-Written: X, 7, Ellie, 412-656-2213
-W X (8, Tina, 417-656-2212)
-Create L-0 K-X7-X8
-Written: X, 8, Tina, 417-656-2212
-W X (4, Joe, 412-656-2213)
-Written: X, 4, Joe, 412-656-2213
-R X 1
-SWAP K-X1
-Read: X, 1, Lily, 412-656-2215
-E X 5
-SWAP IN L-0 K-X1-X7
-Create L-1 K-X1-X2
-Create L-1 K-X4-X7
-SWAP IN L-0 K-Y3-Y5
-Create L-1 K-Y3-Y5
-Create L-0 K-X4-X5
-Erased: X 5
-W Y (9, Lucky, 412-100-2222)
-Written: Y, 9, Lucky, 412-100-2222
-W Y (4, Jane, 417-111-2222)
-Create L-0 K-Y4-Y9
-Written: Y, 4, Jane, 417-111-2222
-R Y 9
-SWAP K-Y9
-Read: Y, 9, Lucky, 412-100-2222
-R Y 4
-SWAP K-Y4
-Read: Y, 4, Jane, 417-111-2222
-R X 10
-M X 412
-SWAP K-X4
-MRead: X, 4, Joe, 412-656-2213
-E Y 5
-Erased: Y 5
-R Y 5
-Read: Y, 5, delete
-D Y
-Deleted: Y
-R Y 9
+R X 5
+Read: no such data
+W X (5, John, 412-111-2222)
+Create L-0 K-X5-X5
+Written: X, 5, John, 412-111-2222
+R X 5
+Read: X, 5, John, 412-111-2222
+R X 6
+Read: no such data
+W X (5, Ben, 412-111-2222)
+Create L-0 K-X5-X5
+Written: X, 5, Ben, 412-111-2222
+R X 5
+Read: X, 5, Ben, 412-111-2222
+W X (6, Ann, 412-222-1111)
+Create L-0 K-X6-X6
+Written: X, 6, Ann, 412-222-1111
+R X 6
+SWAP K-X6
+Read: X, 6, Ann, 412-222-1111
+W X (6, Jack, 412-222-1111)
+Create L-0 K-X6-X6
+Written: X, 6, Jack, 412-222-1111
+W X (6, Mike, 412-222-1111)
+Create L-1 K-X5-X5
+Create L-1 K-X6-X6
+Create L-0 K-X6-X6
+Written: X, 6, Mike, 412-222-1111
+R X 6
+Read: X, 6, Mike, 412-222-1111
+E X 7
+Create L-0 K-X7-X7
+Erased: X 7
+E X 6
+Create L-0 K-X6-X6
+Erased: X 6
+R X 6
+Read: no such data
+D X
+Deleted: X
+R X 6
 table deleted
-R X 4
-Read: X, 4, Joe, 412-656-2213
+W X (6, Ann, 412-222-1111)
+Create L-0 K-X6-Xdelete
+Written: X, 6, Ann, 412-222-1111
+R X 6
+Read: X, 6, Ann, 412-222-1111
+M Y 412
+MRead: no such data
+W Y (10, Mary, 412-333-3333)
+SWAP IN L-0 K-X5-X6
+Create L-1 K-X5-X5
+Create L-1 K-X6-X6
+Create L-1 K-X7-X7
+Create L-1 K-Xdelete-Xdelete
+Create L-0 K-Y10-Y10
+Written: Y, 10, Mary, 412-333-3333
+W Y (11, Paul, 412-444-4444)
+Create L-0 K-Y11-Y11
+Written: Y, 11, Paul, 412-444-4444
+M Y 412
+SWAP K-Y11
+MRead: Y, 11, Paul, 412-444-4444
+SWAP K-Y10
+MRead: Y, 10, Mary, 412-333-3333
 -------------------------
 Time: 76ms
-The total throughput: 407.89473684210526
-The read throughput: 218.1818181818182
-The write throughput: 1000.0
+The total throughput: 289.4736842105263
+The read throughput: 209.30232558139534
+The write throughput: 285.7142857142857

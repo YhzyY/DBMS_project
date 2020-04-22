@@ -38,16 +38,15 @@ public class Main {
             transactionManager.readTransactions(readMode, randomSeed, maxLines);
         }
 
-//  TODO:    You can comment all the above code and uncomment all the below code to see how LSM works without Transaction Manager and Scheduler
-
-        /**
+//  TODO:  Phase1:  You can comment all the above code and uncomment all the below code to see how LSM works without Transaction Manager and Scheduler
+/**
         long startTime=System.currentTimeMillis();  
-        final int cacheCapacity = 2;
-        final int SSTableCapacity = 2;
+        final int cacheCapacity = 1;
+        final int SSTableCapacity = 1;
         final PrintStream out = new PrintStream("log.txt");
         System.setOut(out);
 
-        FileInputStream inputStream = new FileInputStream("./src/com/lsm/script");
+        FileInputStream inputStream = new FileInputStream("./src/com/lsm/script.txt");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String action;
@@ -108,6 +107,6 @@ public class Main {
         System.out.println("The total throughput: " + numrecord*1000.0/(endTime-startTime));
         System.out.println("The read throughput: " + rnum*1000.0/rtime);
         System.out.println("The write throughput: " + wnum*1000.0/wtime);
-         **/
+**/
     }
 }

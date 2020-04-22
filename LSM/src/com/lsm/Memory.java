@@ -60,7 +60,7 @@ public class Memory{
     public static void erase(String tableName, String data){
 //        System.out.println(tableName);
         String key = data.trim();
-        List value = Arrays.asList("delete");
+        List value = Arrays.asList("erased");
 //        System.out.println(key + " : " + value);
         TreeMap memtable;
         if(tableMap.containsKey(tableName)){
@@ -68,6 +68,7 @@ public class Memory{
         }else{
             memtable = new TreeMap();
         }
+        cache.set(tableName, key, value);
         memtable.put(key, value);
         checkFlush(tableName, memtable);
         System.out.println("Erased: " + tableName + " " + data);
@@ -95,21 +96,22 @@ public class Memory{
         if (deletedTable.contains(tableName)) {
             System.out.println("table deleted");
         } else {
+            boolean getFlag = false;
     //       System.out.println(tableName + ":" + key);
             List cached = cache.get(tableName, key);
             TreeMap memtable = (TreeMap) tableMap.get(tableName);
             if (cached != null) {
     //        read from buffered cache
-    //            System.out.println("read from cache");
-    //            System.out.println(cached.toString());
-                String output = cached.toString();
-                System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                if(!cached.get(0).toString().equals("erased")){
+                    String output = cached.toString();
+                    System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                    getFlag = true;
+                }
             } else if ((memtable != null) && (memtable.containsKey(key))) {
     //        read from memtable
-    //            System.out.println("read from memtable");
-    //            System.out.println(memtable.toString());
                 String output = memtable.get(key).toString();
                 System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                getFlag = true;
             } else {
     //            System.out.println("read from disk");
 
@@ -120,8 +122,11 @@ public class Memory{
                     cache.add(tableName, (String) list.get(0), (List) list.get(1));
                     String output = list.get(1).toString();
                     System.out.println("Read: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                    getFlag = true;
                 }
             }
+            if(!getFlag)
+                System.out.println("Read: no such data");
         }
     }
 
@@ -206,13 +211,12 @@ public class Memory{
         if (deletedTable.contains(tableName)) {
             System.out.println("table deleted");
         } else {
+            boolean getFlag = false;
     //        System.out.println(tableName + ":" + area);
             TreeMap memtable = (TreeMap) tableMap.get(tableName);
             Set outputKey = new HashSet();
             if (memtable != null) {
     //        read from memtable
-    //            System.out.println("read from memtable");
-    //            System.out.println(memtable.toString());
                 for (Object key : memtable.keySet()) {
                     if (!outputKey.contains(key)) {
                         List value = (List) memtable.get((String) key);
@@ -223,27 +227,27 @@ public class Memory{
                             String output = value.toString();
                             outputKey.add(key);
                             System.out.println("MRead: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                            getFlag = true;
+                            return;
                         }
                     }
 
                 }
 
             }
-    //        System.out.println("read from disk");
-
             Map<String, List> dataFromDisk = getAreaCodeSSTable(tableName, area, outputKey); //从disk里取出需要的key-value pairs
 
-            if (dataFromDisk.size() == 0) {
-    //            System.out.println("data not found in disk");
-                return;
-            } else {
+            if (!(dataFromDisk.size() == 0)){
                 for (String key : dataFromDisk.keySet()) {
                     cache.add(tableName, key, dataFromDisk.get(key));
                     String output = dataFromDisk.get(key).toString();
                     System.out.println("MRead: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+                    getFlag = true;
                 }
             }
-    }
+            if(!getFlag)
+                System.out.println("MRead: no such data");
+        }
     }
 
     public static Map<String, List> getAreaCodeSSTable(String tableName, String area, Set outputKey) {
