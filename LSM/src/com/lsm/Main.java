@@ -3,25 +3,39 @@ package com.lsm;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-
+//current directory: System.getProperty("user.dir")
 
     public static void main(String[] args) throws IOException {
-        final int cacheCapacity = 2;  //buffer size for the Data Manager
-        final int SSTableCapacity = 2;
-        String readMode = "roundRobin";  //either "random" or "roundRobin"
         String scriptDirectory = "./src/com/lsm/scripts"; // the directory contains all the scripts
-        int randomSeed = '1'; // seed of the random number generator
+        Scanner myObj = new Scanner(System.in);
+        System.out.println("Enter readMode (either 'random or 'roundRobin'):");
+        String readMode = myObj.nextLine();  //either "random" or "roundRobin"
+        if((!readMode.equals("roundRobin")) && (!readMode.equals("random"))){
+            System.out.println("Wrong reading mode in Main.java");
+            System.exit(1);
+        }
+        System.out.println("Enter cacheCapacity (>0):");
+        int cacheCapacity = myObj.nextInt();  // buffer size for the Data Manager
+        System.out.println("Enter SSTableCapacity (>0):");
+        int SSTableCapacity = myObj.nextInt();  // buffer size for the Data Manager
 
+        if((cacheCapacity <= 0) || (SSTableCapacity <= 0)){
+            System.out.println("buffer size cannot be smaller than 1");
+            System.exit(1);
+        }
         Memory memory = new Memory(cacheCapacity, SSTableCapacity);
         TransactionManager transactionManager = new TransactionManager(scriptDirectory, memory);
-        if(readMode.equals("random")){
-            transactionManager.random(randomSeed);
-        }else if(readMode.equals("roundRobin")){
-            transactionManager.roundRobin();
-        }else{
-            System.out.println("Wrong reading mode in Main.java");
+        if(readMode.equals("roundRobin")){
+            transactionManager.readTransactions(readMode, 0, 0);
+        }else {
+            System.out.println("Enter randomSeed:");
+            long randomSeed = myObj.nextLong();  // seed of the random number generator
+            System.out.println("Enter maxLines to be read in one random run:");
+            int maxLines = myObj.nextInt();  // maxLines to be read in one random run
+            transactionManager.readTransactions(readMode, randomSeed, maxLines);
         }
 
 //  TODO:    You can comment all the above code and uncomment all the below code to see how LSM works without Transaction Manager and Scheduler

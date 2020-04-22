@@ -13,67 +13,109 @@ public class TransactionManager {
         scheduler = new Scheduler(memory);
     }
 
-
-
-    public static void roundRobin() throws IOException {
-        System.out.println("Round Robin Reading: " + scriptDirectory);
-
-        List transactionList = new ArrayList();
-        List processeList = new ArrayList();
+    public void readTransactions(String readMode, long randomSeed, int maxLines) throws IOException {
         Map transactionBuffer = new HashMap<>();
         Map transactionMode = new HashMap<>();
-        boolean finishReading = false;
 
         File filePath = new File(scriptDirectory);
-        File[] allFileName = filePath.listFiles();
-        List fileList = new ArrayList(Arrays.asList(allFileName));
+        List list = new ArrayList();
+        List fileList = getFiles(filePath, list);
+//        System.out.println(fileList);
 
-        System.out.println(fileList);
-        for (Object file : fileList){
+        for (Object file : fileList) {
             FileInputStream inputStream = new FileInputStream(file.toString());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String input = bufferedReader.readLine();
-            String EMode = input.substring(input.length()-1);
-            if(EMode.equals("1")){  //new transaction (EMode=1)
+            String EMode = input.substring(input.length() - 1);
+            if (EMode.equals("1")) {  //new transaction (EMode=1)
                 transactionMode.put(file, 1);
                 transactionBuffer.put(file, bufferedReader);
-            }else if (EMode.equals("0")){  //new process (EMode=0)
+            } else if (EMode.equals("0")) {  //new process (EMode=0)
                 transactionMode.put(file, 0);
                 transactionBuffer.put(file, bufferedReader);
             }
         }
+        if (readMode.equals("roundRobin")) {
+            roundRobin(fileList, transactionBuffer, transactionMode);
+        } else {
+            random(fileList, transactionBuffer, transactionMode, randomSeed, maxLines);
+        }
+    }
 
-        while(!finishReading){
-            for(Object file : fileList){
+    private List getFiles(File filePath, List list) {
+        File[] fs = filePath.listFiles();
+        for(File f:fs){
+            if(f.isDirectory())	//若是目录，则递归打印该目录下的文件
+                getFiles(f, list);
+            if(f.isFile())		//若是文件，直接打印
+                list.add(f);
+        }
+        return list;
+    }
+
+
+    private void roundRobin(List fileList, Map transactionBuffer, Map transactionMode) throws IOException {
+        System.out.println("Round Robin Reading: " + scriptDirectory);
+        List transactionList = new ArrayList();
+        List processList = new ArrayList();
+        boolean finishReading = false;
+
+        while (!finishReading) {
+            for (Object file : fileList) {
                 BufferedReader buffer = (BufferedReader) transactionBuffer.get(file);
-                if(buffer == null) continue;
+                if (buffer == null) continue;
                 String input = buffer.readLine();
-                if(input == null){
+                if (input == null) {
                     transactionBuffer.remove(file);
                     transactionMode.remove(file);
                     continue;
                 }
                 int nameBegin = file.toString().lastIndexOf("/") + 1;
-                if(transactionMode.get(file).toString().equals("0")){
+                if (transactionMode.get(file).toString().equals("0")) {
                     transactionList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
-                }else{
-                    processeList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
+                } else {
+                    processList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
                 }
             }
-            if(transactionMode.isEmpty()) finishReading = true;
+            if (transactionMode.isEmpty()) finishReading = true;
         }
         scheduler.scheduleTransaction(transactionList);
-        scheduler.scheduleProcess(processeList);
-
+        scheduler.scheduleProcess(processList);
     }
 
 
-
-
-    public static void random(int randomSeed) {
-        System.out.println("Random Reading");
-//        scheduler.scheduleTransaction(transactions);
-//        scheduler.scheduleProcess(processes);
-
+    private void random(List fileList, Map transactionBuffer, Map transactionMode, long randomSeed, int maxLines) throws IOException {
+        System.out.println("Random Reading: " + scriptDirectory);
+        List transactionList = new ArrayList();
+        List processList = new ArrayList();
+        Random ran = new Random(randomSeed);
+        while (!transactionMode.isEmpty()) {
+            int fileIndex = ran.nextInt(transactionMode.size());
+            Object fileName = fileList.get(fileIndex);
+            BufferedReader buffer = (BufferedReader) transactionBuffer.get(fileName);
+            if (buffer == null){
+                fileList.remove(fileName);
+                continue;
+            }
+            int nameBegin = fileName.toString().lastIndexOf("/") + 1;
+            int readRow = ran.nextInt(maxLines);
+            while(readRow > 0){
+                String input = buffer.readLine();
+                if (input == null) {
+                    transactionBuffer.remove(fileName);
+                    transactionMode.remove(fileName);
+                    fileList.remove(fileName);
+                    break;
+                }
+                if (transactionMode.get(fileName).toString().equals("0")) {
+                    transactionList.add(new ArrayList<>(Arrays.asList(fileName.toString().substring(nameBegin), input)));
+                } else {
+                    processList.add(new ArrayList<>(Arrays.asList(fileName.toString().substring(nameBegin), input)));
+                }
+                readRow--;
+            }
+        }
+        scheduler.scheduleTransaction(transactionList);
+        scheduler.scheduleProcess(processList);
     }
 }
