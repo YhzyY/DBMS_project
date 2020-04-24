@@ -58,14 +58,15 @@ public class TransactionManager {
         System.out.println("Round Robin Reading: " + scriptDirectory);
         List transactionList = new ArrayList();
         List processList = new ArrayList();
-        boolean finishReading = false;
 
-        while (!finishReading) {
-            for (Object file : fileList) {
+        while (!transactionMode.isEmpty()) {
+            for (int i = 0; i < fileList.size(); i++) {
+                Object file = fileList.get(i);
                 BufferedReader buffer = (BufferedReader) transactionBuffer.get(file);
                 if (buffer == null) continue;
                 String input = buffer.readLine();
                 if (input == null) {
+                    fileList.remove(file);
                     transactionBuffer.remove(file);
                     transactionMode.remove(file);
                     continue;
@@ -77,7 +78,6 @@ public class TransactionManager {
                     processList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
                 }
             }
-            if (transactionMode.isEmpty()) finishReading = true;
         }
         scheduler.scheduleTransaction(transactionList);
         scheduler.scheduleProcess(processList);
