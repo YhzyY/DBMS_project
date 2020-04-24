@@ -207,6 +207,63 @@ public class Memory{
         return null;
     }
 
+    
+    //Was updated for scheduler
+        public static ArrayList<Integer> returnAreaCodes(String tableName,String area)
+    {
+        ArrayList<Integer>returnList = new ArrayList<Integer>();
+
+        if (deletedTable.contains(tableName)) {
+            System.out.println("table deleted");
+        } else {
+            //        System.out.println(tableName + ":" + area);
+            TreeMap memtable = (TreeMap) tableMap.get(tableName);
+            Set outputKey = new HashSet();
+            if (memtable != null) {
+                //        read from memtable
+                //            System.out.println("read from memtable");
+                //            System.out.println(memtable.toString());
+                for (Object key : memtable.keySet()) {
+                    if (!outputKey.contains(key)) {
+                        List value = (List) memtable.get((String) key);
+                        if (value.size() <= 1) {
+                            continue;
+                        }
+                        if (((String) value.get(1)).substring(0, 3).equals(area)) {
+                            String output = value.toString();
+                            outputKey.add(key);
+                            //System.out.println("MRead: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+
+                            //We are assuming that the key is of Integer type
+                            returnList.add(Integer.valueOf((Integer)key));
+                        }
+                    }
+
+                }
+
+            }
+            //        System.out.println("read from disk");
+
+            Map<String, List> dataFromDisk = getAreaCodeSSTable(tableName, area, outputKey); //从disk里取出需要的key-value pairs
+
+            if (dataFromDisk.size() == 0) {
+                //            System.out.println("data not found in disk");
+                return returnList;
+            } else {
+                for (String key : dataFromDisk.keySet()) {
+                    cache.add(tableName, key, dataFromDisk.get(key));
+                    String output = dataFromDisk.get(key).toString();
+                    System.out.println("MRead: " + tableName + ", " + key + ", " + output.substring(1, output.length() - 1));
+
+                    //Assumption is that the key holds the ID of that tuple
+                    returnList.add(Integer.valueOf(key));
+                }
+            }
+        }
+        return returnList;
+    }
+
+    
     public static void readAreaCode(String tableName, String area) {
         if (deletedTable.contains(tableName)) {
             System.out.println("table deleted");
