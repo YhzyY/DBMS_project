@@ -79,6 +79,100 @@ public class Scheduler {
 
 
 
+    public static void removeVertexT(Integer remove_id,int no_of_vertices)
+    {
+        wait_for_graphT.get(remove_id).clear();
+
+        for(int i=0;i<=no_of_vertices;i++)
+        {
+            if(wait_for_graphT.get(i).contains(remove_id))
+            {
+                wait_for_graphT.get(i).remove(remove_id);
+            }
+        }
+
+    }
+
+    public static void updateAllMapsAfterVertexRemovalT(Integer remove_id,
+                                                       HashMap<String, ArrayList<String>>txn_resources,
+                                                       HashMap<String,ArrayList<String>>lock_table,
+                                                       HashMap<String,ArrayList<Integer>>isResourceFree,
+                                                       HashMap<String,ArrayList<String>>resource_lock)
+    {
+        for(String resource: txn_resources.get(String.valueOf(remove_id)))
+        {
+            Integer next_transaction = null;
+            boolean isRead = true;
+
+            if(lock_table.containsKey(resource) && lock_table.get(resource).size() != 0)
+            {
+                next_transaction = Integer.valueOf(lock_table.get(resource).get(0).split("_")[0]);
+
+                if(lock_table.get(resource).get(0).split("_")[1].equals("WL"))
+                {
+                    isRead = false;
+                }
+            }
+
+            //Remove the transaction ID from the resource
+            int remove_index = isResourceFree.get(resource).indexOf(remove_id);
+            //System.out.println("REMOVE ID IS " + remove_id);
+            ArrayList<Integer>temp_isResource = new ArrayList<Integer>();
+            ArrayList<String>temp_lock = new ArrayList<String>();
+
+            int i = 0;
+            for(Integer txns: isResourceFree.get(resource))
+            {
+                if(!txns.equals(remove_id))
+                {
+                    temp_isResource.add(txns);
+                    temp_lock.add(resource_lock.get(resource).get(i));
+                }
+                i++;
+            }
+
+            //Update new isResourceFree and resource_lock
+            isResourceFree.put(resource,temp_isResource);
+            resource_lock.put(resource,temp_lock);
+
+            if(isResourceFree.get(resource).size() == 0)
+            {
+                isResourceFree.remove(resource);
+                resource_lock.remove(resource);
+            }
+
+            if(next_transaction == null) continue;
+
+            System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
+
+            updateAllMaps(false,resource,String.valueOf(next_transaction),isResourceFree,resource_lock,txn_resources,isRead?"RL":"WL");
+
+            System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
+
+            lock_table.get(resource).remove(0);
+
+            //Add new edges to the graph
+            if(lock_table.get(resource).size() == 0)
+                lock_table.remove(resource);
+            else
+            {
+                for(String txns: lock_table.get(resource))
+                {
+                    if(!Integer.valueOf(txns.split("_")[0]).equals(next_transaction))
+                        add_edge(Integer.valueOf(txns.split("_")[0]),next_transaction);
+                }
+            }
+
+        }
+
+        //Remove Everything related to that transaction
+        System.out.println("Going to remove " + remove_id);
+        txn_resources.remove(String.valueOf(remove_id));
+    }
+
+
+
+
     public static void scheduleTransaction(List transactions){
         //System.out.println("transactions :");
 
@@ -925,6 +1019,11 @@ public class Scheduler {
                 {
                     //System.out.println("Deadlock Detected");
                     is_cycle = true;
+
+                    System.out.println("Deadlock is detected");
+                    System.out.println("Choosing "+transaction_id+" as victim");
+                    removeVertexT(Integer.valueOf(transaction_id),no_vertices);
+                    updateAllMapsAfterVertexRemovalT(Integer.valueOf(transaction_id),txn_resources,lock_table,isResourceFree,resource_lock);
                 }
             }
 
@@ -1188,7 +1287,7 @@ public class Scheduler {
         }
         else
         {
-            System.out.println("Lock table is not empty but edge does not exist");
+            //System.out.println("Lock table is not empty but edge does not exist");
         }
     }
 
@@ -1202,12 +1301,12 @@ public class Scheduler {
         {
             if(!dest.equals(Integer.valueOf(transaction_id)))
             {
-                System.out.println("Adding edge from "+Integer.valueOf(transaction_id)+" to "+dest);
+                //System.out.println("Adding edge from "+Integer.valueOf(transaction_id)+" to "+dest);
                 Scheduler.add_edgeP(Integer.valueOf(transaction_id),dest);
             }
             else
             {
-                System.out.println("Unexpected Behaviour");
+                //System.out.println("Unexpected Behaviour");
             }
         }
 
@@ -1372,11 +1471,11 @@ public class Scheduler {
 
                 if(next_transaction == null) continue;
 
-                System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
+                //System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
 
                 updateAllMaps(false,resource,String.valueOf(next_transaction),isResourceFree,resource_lock,txn_resources,isRead?"RL":"WL");
 
-                System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
+                //System.out.println("Next transaction" + next_transaction + " txn resource " + txn_resources.get(String.valueOf(next_transaction)));
 
                 lock_table.get(resource).remove(0);
 
@@ -1395,7 +1494,7 @@ public class Scheduler {
             }
 
             //Remove Everything related to that transaction
-            System.out.println("Going to remove " + remove_id);
+            //System.out.println("Going to remove " + remove_id);
             txn_resources.remove(String.valueOf(remove_id));
     }
 
@@ -1414,7 +1513,7 @@ public class Scheduler {
 
                 if(temp.size() > 0)
                 {
-                    System.out.println("Put");
+                    //System.out.println("Put");
                     lock_table.put(key,temp);
                 }
                 else
@@ -1449,8 +1548,8 @@ public class Scheduler {
 
         String key = table_name+"_"+id;
 
-        System.out.println("The key is " + key);
-        System.out.println("Transaction id " + transaction_id);
+        //System.out.println("The key is " + key);
+        //System.out.println("Transaction id " + transaction_id);
 
         int index = -1, i =0;
         for(String resource: txn_resources.get(transaction_id))
@@ -1464,7 +1563,7 @@ public class Scheduler {
         }
         if(index == -1)
         {
-            System.out.println("Txn: Sorry no match found");
+            //System.out.println("Txn: Sorry no match found");
         }
         else
         {
@@ -1488,7 +1587,7 @@ public class Scheduler {
 
         if(index == -1)
         {
-            System.out.println("isResourceFree: Sorry no match found");
+            //System.out.println("isResourceFree: Sorry no match found");
         }
         else
         {
@@ -1524,7 +1623,7 @@ public class Scheduler {
                 isRead = false;
         }
 
-        System.out.println("The next transaction is " + next_transaction);
+       // System.out.println("The next transaction is " + next_transaction);
 
         for(String locks: resource_lock.get(key))
         {
@@ -1694,7 +1793,7 @@ public class Scheduler {
             }
             else if(operation.charAt(0) == 'W')
             {
-                System.out.println("OPERATION WRITE " + operation);
+                //System.out.println("OPERATION WRITE " + operation);
                 String table_name = operation.split(" ")[1];
                 String id = operation.substring(5,operation.length()-1).split(",")[0];
 
@@ -1809,9 +1908,9 @@ public class Scheduler {
             }
             else
             {
-                System.out.println("Not a valid operation(R/M/W/E/D)");
+                //System.out.println("Not a valid operation(R/M/W/E/D)");
             }
-
+            /*
             System.out.println("______________TXN resources ___________");
             for(String keys: txn_resources.keySet())
             {
@@ -1851,7 +1950,9 @@ public class Scheduler {
                 System.out.println();
             }
 
-            System.out.println("_____________Cycle Detection_________________");
+             */
+
+            //System.out.println("_____________Cycle Detection_________________");
             boolean[] visited = new boolean[TOT_VERTICES];
             boolean[] inCurStack = new boolean[TOT_VERTICES];
             boolean is_cycle = false;
@@ -1887,7 +1988,7 @@ public class Scheduler {
             {
                 //System.out.println("There is no deadlock in this history");
             }
-            System.out.println("____________________________________________");
+            //System.out.println("____________________________________________");
 
 
         }
