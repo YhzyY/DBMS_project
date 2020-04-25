@@ -2,11 +2,13 @@ package com.lsm;
 
 import java.io.*;
 import java.util.*;
+import java.text.DecimalFormat;
 
 public class TransactionManager {
 
     static String scriptDirectory;
     static Scheduler scheduler;
+    long startTime;
 
     public TransactionManager(String scriptDirectory, Memory memory) {
         this.scriptDirectory = scriptDirectory;
@@ -14,6 +16,7 @@ public class TransactionManager {
     }
 
     public void readTransactions(String readMode, long randomSeed, int maxLines) throws IOException {
+        startTime = System.currentTimeMillis();
         Map transactionBuffer = new HashMap<>();
         Map transactionMode = new HashMap<>();
 
@@ -73,7 +76,9 @@ public class TransactionManager {
                 }
                 int nameBegin = file.toString().lastIndexOf("/") + 1;
                 if (transactionMode.get(file).toString().equals("0")) {
-                    transactionList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
+                    String s = file.toString().substring(nameBegin);
+                    s = s.substring(s.lastIndexOf("\\")+1);
+                    transactionList.add(new ArrayList<>(Arrays.asList(s, input)));
                 } else {
                     processList.add(new ArrayList<>(Arrays.asList(file.toString().substring(nameBegin), input)));
                 }
@@ -81,8 +86,67 @@ public class TransactionManager {
         }
         scheduler.scheduleTransaction(transactionList);
         scheduler.scheduleProcess(processList);
+        statistic(transactionList);
     }
 
+    private void statistic(List History){
+        long endTime = System.currentTimeMillis();
+        DecimalFormat fnum = new DecimalFormat("#0.000");
+        Map<String,Integer> map = new HashMap<String,Integer>();
+        Map<String,Integer> submap = new HashMap<String,Integer>();
+        int count = 0;
+        for (Object t : History) {
+            String operation = t.toString().split(",")[1].substring(1,2);
+            String transaction_id = t.toString().split(",")[0].substring(1);
+            String tag = operation + transaction_id;
+            if(!map.containsKey(tag)) {
+                map.put(tag, 1);
+            }
+            else{
+                map.put(tag, map.get(tag)+1);
+            }
+            count++;
+            if(operation.equals("A")) {
+                Iterator<Map.Entry<String, Integer>> it = map.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Integer> entry = it.next();
+                    String s = entry.getKey().substring(1);
+                    if (s.equals(transaction_id)) {
+                        count -= entry.getValue();
+                        it.remove();
+                    }
+                }
+            }
+        }
+        System.out.println();
+        System.out.println("_______________Statistic______________");
+        List list = new ArrayList();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            String operation = entry.getKey().substring(0,1);
+            String id = entry.getKey().substring(1);
+            if(!submap.containsKey(operation)) {
+                submap.put(operation, entry.getValue());
+            }
+            else{
+                submap.put(operation, submap.get(operation)+entry.getValue());
+            }
+            if(!list.contains(id)){
+                list.add(id);
+            }
+        }
+        System.out.println("Number of committed transactions: " + list.size());
+        System.out.println("The percentage of the operations:");
+        for (Map.Entry<String, Integer> entry : submap.entrySet()) {
+            double percentage = entry.getValue() * 1.0 / count;
+            String d = fnum.format(percentage);
+            System.out.println(entry.getKey() + ":" + d);
+        }
+        System.out.println("The execution time：" + (endTime - startTime) + "ms");
+        double average = (endTime - startTime) * 1.0 / count;
+        String d = fnum.format(average);
+        System.out.println("The average response time：" + d + "ms");
+        System.out.println("______________________________________");
+    }
 
     private void random(List fileList, Map transactionBuffer, Map transactionMode, long randomSeed, int maxLines) throws IOException {
         System.out.println("Random Reading: " + scriptDirectory);
