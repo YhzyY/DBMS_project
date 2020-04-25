@@ -11,21 +11,6 @@ public class Scheduler {
     public static ArrayList<ArrayList<Integer>>wait_for_graphT = new ArrayList<ArrayList<Integer>>(TOT_VERTICES);
 
 
-
-    //0:Read , 1:AreaCode_Read , 2 : Write , 3 : Deleted tuple , 4 : Delete table
-
-    boolean[][] compatibility_table = {{true,true,true,true,true},{true,true,true,true,true},{true,true,true,true,true}
-                                        ,{true,true,true,true,true},{true,true,true,true,true}};
-
-    /*
-    1. Before images
-    2.Excute the operation as you get the lock(put it in the before images)
-
-    3.Finish process(easiest start with this) -> DONE
-
-    4.Handle deadlock
-     */
-
     static Memory memory;
 
     public Scheduler(Memory memory) {
@@ -37,11 +22,9 @@ public class Scheduler {
 //    TODO: 1. Use "Strict Two-Phase Locking protocol" to ensure serializability
 //    TODO: 2. Deadlock detection (using "wait-for graphs") and its recovery mechanisms (using "undo recovery strategy")
 
-    //**************************IMPORTANT***************************
-    //BUGS: Try to find a way to implement shared read locks on data items, extend the isResourceFree
-    //hashmap to hold an arrayList of Txns that share this lock and remove them one by one
-    //If it is write then only single Txn should hold that lock
-    //**************************************************************
+    /*********************************************************
+                    Scheduling on transactions
+    **************************************************************/
 
 
     public static void add_edge(Integer source,Integer dest)
@@ -1419,6 +1402,7 @@ public class Scheduler {
     public static void removeFromLockTable(String transaction_id,
                                             HashMap<String,ArrayList<String>>lock_table)
     {
+        ArrayList<String>remove_keys = new ArrayList<String>();
         for(String key: lock_table.keySet())
         {
                 ArrayList<String>temp = new ArrayList<String>();
@@ -1429,10 +1413,20 @@ public class Scheduler {
                 }
 
                 if(temp.size() > 0)
+                {
+                    System.out.println("Put");
                     lock_table.put(key,temp);
+                }
                 else
-                    lock_table.remove(key);
-
+                {
+                    remove_keys.add(key);
+                    //System.out.println("Remove");
+                    //lock_table.remove(key);
+                }
+        }
+        for(String key:remove_keys)
+        {
+            lock_table.remove(key);
         }
     }
 
