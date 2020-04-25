@@ -1388,7 +1388,7 @@ public class Scheduler {
                     for(String txns: lock_table.get(resource))
                     {
                         if(!Integer.valueOf(txns.split("_")[0]).equals(next_transaction))
-                            add_edge(Integer.valueOf(txns.split("_")[0]),next_transaction);
+                            add_edgeP(Integer.valueOf(txns.split("_")[0]),next_transaction);
                     }
                 }
 
