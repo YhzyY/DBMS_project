@@ -1,0 +1,23 @@
+_________________History______________
+[1, R A 1]
+[2, R A 1]
+[1, W A (1, Thalia, 412-111-1324)]
+[2, W A (1, Thalia, 412-111-1324)]
+[1, C]
+[2, C]
+_______________________________________
+I am adding and edge from 1 to 2
+I am adding and edge from 2 to 1
+Deadlock detected in history
+
+_______________Statistic______________
+Number of committed transactions: 2
+The percentage of the operations:
+R:0.333
+C:0.333
+W:0.333
+The execution time£º3ms
+The average response time£º0.500ms
+______________________________________
+
+Process finished with exit code 0
