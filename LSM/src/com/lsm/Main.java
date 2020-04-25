@@ -26,6 +26,8 @@ public class Main {
             System.out.println("buffer size cannot be smaller than 1");
             System.exit(1);
         }
+        final PrintStream out = new PrintStream("log.txt");
+        System.setOut(out);
         Memory memory = new Memory(cacheCapacity, SSTableCapacity);
         TransactionManager transactionManager = new TransactionManager(scriptDirectory, memory);
         if(readMode.equals("roundRobin")){
