@@ -1690,6 +1690,10 @@ public class Scheduler {
         //No atomicity We will commit operations as we go, keep performing operations
         //on the fly for reads but delay writes till commit time. In this way it reads
         //only from committed data but suffers from non-repeatable reads
+        
+        System.out.println();
+        System.out.println("_____________Start of process _____________________");
+        System.out.println();
 
         init_graphP();
         boolean isFinalCycle = false;
